@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [ 'main' ]
-  pull_request: 
+    branches: [ main, master ]
+  pull_request:
 
 jobs:
   tests:
@@ -21,32 +21,40 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, dom, sqlite3, pdo_sqlite
+          extensions: mbstring, dom, sqlite3, pdo_sqlite, zip
           coverage: none
+          tools: composer:v2
+
+      - name: Determine Composer cache dir
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.composer/cache/files
-            vendor
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php${{ matrix.php }}-composer-
 
       - name: Install dependencies
-        run: |
-          composer install --no-progress --no-interaction --prefer-dist
+        run: composer install --no-progress --no-interaction --prefer-dist
 
       - name: Prepare environment
         run: |
           php -r "file_exists('.env') || copy('.env.example', '.env');"
           php artisan key:generate --ansi
+          php artisan config:clear
+          php artisan cache:clear
 
       - name: Run tests (SQLite in-memory)
         env:
-          # phpunit.xml already sets DB_CONNECTION=sqlite and DB_DATABASE=:memory:
           APP_ENV: testing
         run: |
-          composer test
-
+          # Jika composer.json punya script "test", ini akan jalan
+          # Jika tidak, fallback ke artisan test
+          if composer run -l | grep -q " test"; then
+            composer test
+          else
+            php artisan test --env=testing
+          fi
