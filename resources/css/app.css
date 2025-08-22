@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn { @apply inline-flex items-center px-4 py-2 rounded text-sm font-medium transition; }
+  .btn-primary { @apply btn bg-blue-600 text-white hover:bg-blue-700; }
+  .btn-secondary { @apply btn border hover:bg-gray-50; }
+
+  .badge { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium; }
+  .badge-success { @apply badge bg-green-100 text-green-800; }
+  .badge-warning { @apply badge bg-yellow-100 text-yellow-800; }
+  .badge-danger { @apply badge bg-red-100 text-red-800; }
+  .badge-info { @apply badge bg-blue-100 text-blue-800; }
+
+  .table { @apply min-w-full text-sm; }
+  .table thead { @apply bg-gray-50; }
+  .table th, .table td { @apply text-left p-3; }
+  .card { @apply bg-white rounded shadow p-6; }
+  .glass-card {@apply bg-white/10 backdrop-blur-md shadow-xl;}
+}
+
+/* Font family hook */
+@layer base {
+  :root {
+    --brand: #ff3b1a;   /* primary */
+    --brand2: #ffb703;  /* accent */
+    --brand3: #6a00ff;  /* neon */
+  }
+  html, body { font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif; }
+}
+
+/* Components */
+@layer components {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.18)_inset,0_25px_60px_rgba(0,0,0,0.35)];
+  }
+  .btn-funky {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold text-white
+           border border-white/20 transition-transform duration-150;
+    background-image: linear-gradient(90deg, var(--brand), var(--brand2));
+    box-shadow: 0 14px 34px rgba(255,59,26,.34);
+  }
+  .btn-funky:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 18px 48px rgba(255,183,3,.35);
+    filter: saturate(1.08);
+  }
+
+  .brand-mark {
+    @apply w-11 h-11 rounded-xl shadow-[0_10px_30px_rgba(255,59,26,0.35),inset_0_0_18px_rgba(255,255,255,0.15)];
+    background: conic-gradient(from 210deg, var(--brand), var(--brand2), var(--brand3), var(--brand));
+  }
+
+  .kicker {
+    @apply rounded-full px-3 py-1 bg-white/10;
+  }
+  .kicker .dot {
+    @apply w-2 h-2 rounded-full;
+    background: var(--brand2);
+    box-shadow: 0 0 12px var(--brand2);
+  }
+
+  .text-gradient {
+    background: linear-gradient(90deg, var(--brand), var(--brand2) 40%, var(--brand3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .spark {
+    @apply inline-block w-3.5 h-3.5 rounded-full;
+    background:
+      radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,0) 60%),
+      conic-gradient(from 0deg, var(--brand3), var(--brand), var(--brand2), var(--brand3));
+    animation: twinkle 1.8s ease-in-out infinite;
+  }
+}
+
+/* Utilities for funky background + animations */
+@layer utilities {
+  .animate-spin-slow { animation: spin 8s linear infinite; }
+
+  .blob { @apply absolute blur-3xl opacity-60 mix-blend-screen; }
+  .b1 { width: 520px; height: 520px; left: -100px; top: -120px;
+        background: radial-gradient(60% 60% at 30% 30%, #ff5d2b 0%, rgba(255,93,43,0) 70%); }
+  .b2 { width: 620px; height: 620px; right: -140px; top: 120px;
+        background: radial-gradient(60% 60% at 70% 30%, #ffb703 0%, rgba(255,183,3,0) 70%); }
+  .b3 { width: 420px; height: 420px; left: 40%; bottom: -120px;
+        background: radial-gradient(60% 60% at 50% 50%, #6a00ff 0%, rgba(106,0,255,0) 70%); }
+
+  .gridish {
+    @apply absolute inset-0 opacity-50;
+    background:
+      radial-gradient(circle at 0 0, rgba(255,255,255,.10) 0 1px, transparent 1px) 0 0/22px 22px,
+      radial-gradient(circle at 11px 11px, rgba(255,255,255,.04) 0 1px, transparent 1px) 0 0/22px 22px;
+    mask-image: radial-gradient(60% 60% at 50% 40%, black 0%, transparent 70%);
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes twinkle { 0%,100% { transform: scale(.9) } 50% { transform: scale(1.15) } }
+}
