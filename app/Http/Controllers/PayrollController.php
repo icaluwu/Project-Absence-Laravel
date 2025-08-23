@@ -14,8 +14,8 @@ class PayrollController extends Controller
     public function index()
     {
         $items = Payroll::with('user')->latest()->paginate(12);
-        // Ambil semua user (Admin, HR, Karyawan)
-        $users = User::query()->orderBy('name')->get(['id','name']);
+        // Ambil semua user (Admin, HR, Karyawan) beserta gaji pokok untuk auto-fill di form
+        $users = User::query()->orderBy('name')->get(['id','name','gaji_pokok']);
         return view('payroll.index', compact('items','users'));
     }
 

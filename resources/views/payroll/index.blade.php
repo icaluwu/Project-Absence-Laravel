@@ -19,17 +19,17 @@
                 @endif
                 <form method="POST" action="{{ route('payroll.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @csrf
-                    <select name="user_id" class="border rounded p-2" required>
+                    <select id="user_id" name="user_id" class="border rounded p-2" required>
                         <option value="">Pilih Karyawan/Admin/HR</option>
                         @foreach($users as $u)
-                            <option value="{{ $u->id }}">{{ $u->name }}</option>
+                            <option value="{{ $u->id }}" data-salary="{{ (float)($u->gaji_pokok ?? 0) }}">{{ $u->name }}</option>
                         @endforeach
                     </select>
                     <input type="number" name="month" min="1" max="12" class="border rounded p-2" placeholder="Bulan" value="{{ old('month', now()->format('n')) }}" required>
                     <input type="number" name="year" min="2000" class="border rounded p-2" placeholder="Tahun" value="{{ old('year', now()->format('Y')) }}" required>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">Rp</span>
-                        <input type="number" step="0.01" name="basic_salary" class="border rounded p-2 pl-10 w-full" placeholder="Gaji Pokok" required>
+                        <input id="basic_salary" type="number" step="0.01" name="basic_salary" class="border rounded p-2 pl-10 w-full" placeholder="Gaji Pokok" required>
                     </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">Rp</span>
@@ -87,4 +87,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.getElementById('user_id');
+            const input = document.getElementById('basic_salary');
+            if (!select || !input) return;
+
+            function updateSalary() {
+                const opt = select.options[select.selectedIndex];
+                const salary = opt && opt.dataset ? opt.dataset.salary : '';
+                if (salary !== undefined) {
+                    input.value = salary || '';
+                }
+            }
+
+            select.addEventListener('change', updateSalary);
+            updateSalary();
+        });
+    </script>
 </x-app-layout>

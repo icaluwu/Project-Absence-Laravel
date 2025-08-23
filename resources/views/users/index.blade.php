@@ -19,7 +19,7 @@
                             <th class="text-left p-3">NIK</th>
                             <th class="text-left p-3">Departemen</th>
                             <th class="text-left p-3">Jabatan</th>
-                            <th class="text-left p-3">Gaji Pokok</th>
+                            <th class="text-left p-3">Gaji Pokok (Rp)</th>
                             <th class="text-left p-3">Status</th>
                             <th class="text-left p-3">Aksi</th>
                         </tr>
@@ -32,7 +32,7 @@
                                 <td class="p-3">{{ $u->nik }}</td>
                                 <td class="p-3">{{ $u->departemen }}</td>
                                 <td class="p-3">{{ $u->jabatan }}</td>
-                                <td class="p-3">{{ number_format($u->gaji_pokok,2,',','.') }}</td>
+                                <td class="p-3">Rp {{ number_format($u->gaji_pokok,2,',','.') }}</td>
                                 <td class="p-3">{{ $u->status_karyawan }}</td>
                                 <td class="p-3">
                                     <a href="{{ route('users.edit', $u) }}" class="px-3 py-1 border rounded">Edit</a>
