@@ -8,7 +8,8 @@ class StoreOvertimeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasRole('Karyawan') ?? false;
+        // Izinkan semua role pegawai untuk mengajukan lembur
+        return $this->user()?->hasAnyRole(['Admin','HR','Karyawan']) ?? false;
     }
 
     public function rules(): array

@@ -26,4 +26,17 @@ class UpdateUserRequest extends FormRequest
             'status_karyawan' => ['nullable','string','max:50'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+'email.unique' => 'Email tidak boleh sama.',
+            'password.min' => 'Password minimal :min karakter.',
+'nik.unique' => 'NIK sudah ada.',
+            'gaji_pokok.numeric' => 'Gaji Pokok harus berupa angka.',
+        ];
+    }
 }

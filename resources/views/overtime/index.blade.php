@@ -9,9 +9,9 @@
             @endif
             <div class="bg-white rounded shadow overflow-x-auto">
                 <div class="p-4">
-                    @role('Karyawan')
+                    @hasanyrole('Admin|HR|Karyawan')
                         <a href="{{ route('overtime.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded">Ajukan Lembur</a>
-                    @endrole
+                    @endhasanyrole
                 </div>
                 <table class="min-w-full text-sm">
                     <thead class="bg-gray-50">

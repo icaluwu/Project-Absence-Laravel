@@ -8,7 +8,8 @@ class StoreLeaveRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasRole('Karyawan') ?? false;
+        // Izinkan semua role karyawan/pegawai untuk mengajukan (Admin, HR, Karyawan)
+        return $this->user()?->hasAnyRole(['Admin','HR','Karyawan']) ?? false;
     }
 
     public function rules(): array
