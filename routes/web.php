@@ -18,7 +18,7 @@ Route::get('/dashboard', function () {
 
     // Attendance status today
     $today = now()->toDateString();
-    $attendance = \App\Models\Attendance::where('user_id', $user->id)->where('date', $today)->first();
+    $attendance = \App\Models\Attendance::where('user_id', $user->id)->whereDate('date', $today)->first();
     $status = 'Belum absen';
     if ($attendance) {
         if ($attendance->check_in && !$attendance->check_out) $status = 'Sudah Check-in';
@@ -26,24 +26,32 @@ Route::get('/dashboard', function () {
     }
 
     // Pending counts
-    $overtimePending = $user->hasAnyRole(['Admin','HR'])
-        ? \App\Models\OvertimeRequest::where('status','pending')->count()
-        : \App\Models\OvertimeRequest::where('user_id',$user->id)->where('status','pending')->count();
+    // Pending counts (realtime)
+    $overtimePendingQuery = \App\Models\OvertimeRequest::query()->where('status','pending');
+    $leavePendingQuery = \App\Models\LeaveRequest::query()->where('status','pending');
 
-    $leavePending = $user->hasAnyRole(['Admin','HR'])
-        ? \App\Models\LeaveRequest::where('status','pending')->count()
-        : \App\Models\LeaveRequest::where('user_id',$user->id)->where('status','pending')->count();
+    if (!$user->hasAnyRole(['Admin','HR'])) {
+        $overtimePendingQuery->where('user_id', $user->id);
+        $leavePendingQuery->where('user_id', $user->id);
+    }
+
+    $overtimePending = $overtimePendingQuery->count();
+    $leavePending = $leavePendingQuery->count();
 
     // Active announcements (visible window or no dates)
     $todayDate = now()->toDateString();
+    // Active announcements (latest 5)
     $ann = \App\Models\Announcement::query()
-        ->where(function($q) use ($todayDate){
-            $q->whereNull('visible_from')->orWhere('visible_from','<=',$todayDate);
+        ->when(true, function($q) use ($todayDate) {
+            $q->where(function($q2) use ($todayDate){
+                $q2->whereNull('visible_from')->orWhere('visible_from','<=',$todayDate);
+            })->where(function($q3) use ($todayDate){
+                $q3->whereNull('visible_to')->orWhere('visible_to','>=',$todayDate);
+            });
         })
-        ->where(function($q) use ($todayDate){
-            $q->whereNull('visible_to')->orWhere('visible_to','>=',$todayDate);
-        })
-        ->latest()->take(5)->get();
+        ->orderByDesc('id')
+        ->limit(5)
+        ->get();
 
     return view('dashboard', [
         'dashboard' => [

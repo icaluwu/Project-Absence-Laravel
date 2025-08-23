@@ -15,16 +15,22 @@ class AttendanceController extends Controller
         // Use app timezone (configured to Asia/Jakarta) so it resets every local day
         $today = Date::now()->toDateString();
 
-        $attendance = Attendance::firstOrCreate(
-            ['user_id' => $user->id, 'date' => $today],
-            ['ip_address' => request()->ip()]
-        );
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', $today)
+            ->first();
+        if (!$attendance) {
+            $attendance = Attendance::create([
+                'user_id' => $user->id,
+                'date' => $today,
+                'ip_address' => request()->ip(),
+            ]);
+        }
 
         // If HR/Admin, also fetch all today's attendance for overview table
         $todayList = null;
         if ($user->hasAnyRole(['Admin','HR'])) {
             $todayList = Attendance::with('user')
-                ->where('date', $today)
+                ->whereDate('date', $today)
                 ->orderBy('check_in')
                 ->get();
         }
@@ -41,9 +47,15 @@ class AttendanceController extends Controller
         $today = Date::now()->toDateString();
         $now = Date::now()->format('H:i:s');
 
-        $attendance = Attendance::firstOrCreate(
-            ['user_id' => $user->id, 'date' => $today]
-        );
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', $today)
+            ->first();
+        if (!$attendance) {
+            $attendance = Attendance::create([
+                'user_id' => $user->id,
+                'date' => $today,
+            ]);
+        }
 
         if (is_null($attendance->check_in)) {
             $attendance->check_in = $now;
