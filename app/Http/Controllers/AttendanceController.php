@@ -72,4 +72,14 @@ class AttendanceController extends Controller
 
         return back()->with('status', 'Anda sudah check-in dan check-out hari ini');
     }
+
+    public function destroy(Attendance $attendance)
+    {
+        $user = Auth::user();
+        if (!$user->hasAnyRole(['Admin','HR'])) {
+            abort(403);
+        }
+        $attendance->delete();
+        return back()->with('status', 'Data absensi dihapus');
+    }
 }

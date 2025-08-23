@@ -82,6 +82,8 @@ Route::middleware('auth')->group(function () {
         Route::get('payroll/export/csv', [PayrollController::class, 'exportCsv'])->name('payroll.export.csv');
         Route::resource('announcements', AnnouncementController::class);
         Route::resource('users', UserManagementController::class);
+        // Attendance admin actions
+        Route::delete('attendance/{attendance}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
     });
 });
 

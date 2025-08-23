@@ -39,6 +39,7 @@
                                 <th class="text-left p-2">Check-in</th>
                                 <th class="text-left p-2">Check-out</th>
                                 <th class="text-left p-2">IP</th>
+                                <th class="text-left p-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,6 +49,13 @@
                                 <td class="p-2">{{ $row->check_in ? substr($row->check_in,0,5) : '-' }}</td>
                                 <td class="p-2">{{ $row->check_out ? substr($row->check_out,0,5) : '-' }}</td>
                                 <td class="p-2">{{ $row->ip_address ?? '-' }}</td>
+                                <td class="p-2">
+                                    <form method="POST" action="{{ route('attendance.destroy', $row) }}" onsubmit="return confirm('Hapus data absensi ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="px-3 py-1 bg-red-600 text-white rounded">Hapus</button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr><td colspan="4" class="p-3 text-gray-500">Belum ada aktivitas absensi hari ini.</td></tr>
