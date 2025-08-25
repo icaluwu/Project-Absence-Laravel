@@ -74,7 +74,15 @@ class UserManagementController extends Controller
 
     public function destroy(User $user)
     {
-        $user->delete();
-        return back()->with('status','Karyawan dihapus');
+        $response = \Illuminate\Support\Facades\Gate::inspect('delete', $user);
+        if (!$response->allowed()) {
+            return back()->with('error', $response->message() ?: __('admin.users.errors.generic'));
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            $user->delete();
+        });
+
+        return redirect()->route('users.index')->with('status', __('admin.users.deleted'));
     }
 }

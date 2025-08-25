@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', UserManagementController::class);
         // Attendance admin actions
         Route::delete('attendance/{attendance}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
+        Route::get('attendance/export/monthly', [AttendanceController::class, 'exportMonthly'])->name('attendance.export.monthly');
     });
 });
 

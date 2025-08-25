@@ -28,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
         // Map policies (auto-discovery also works, but ensure explicit mapping if needed)
         Gate::policy(\App\Models\OvertimeRequest::class, \App\Policies\OvertimeRequestPolicy::class);
         Gate::policy(\App\Models\LeaveRequest::class, \App\Policies\LeaveRequestPolicy::class);
+        Gate::policy(\App\Models\User::class, \App\Policies\UserPolicy::class);
     }
 }

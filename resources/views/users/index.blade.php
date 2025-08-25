@@ -4,6 +4,9 @@
     </x-slot>
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            @if(session('error'))
+                <div class="mb-4 p-3 bg-red-100 text-red-800 rounded">{{ session('error') }}</div>
+            @endif
             @if(session('status'))
                 <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">{{ session('status') }}</div>
             @endif
@@ -36,11 +39,13 @@
                                 <td class="p-3">{{ $u->status_karyawan }}</td>
                                 <td class="p-3">
                                     <a href="{{ route('users.edit', $u) }}" class="px-3 py-1 border rounded">Edit</a>
-                                    <form action="{{ route('users.destroy', $u) }}" method="POST" class="inline" onsubmit="return confirm('Hapus karyawan ini?')">
+                                    @can('delete', $u)
+                                    <form action="{{ route('users.destroy', $u) }}" method="POST" class="inline" data-confirm="{{ __('admin.users.confirm_delete') }}">
                                         @csrf
                                         @method('DELETE')
                                         <button class="px-3 py-1 bg-red-600 text-white rounded">Hapus</button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

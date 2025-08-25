@@ -30,6 +30,25 @@
 
             @hasanyrole('Admin|HR')
             <div class="bg-white shadow rounded p-6 mt-6">
+                <h2 class="text-lg font-semibold mb-4">Export Rekap Bulanan</h2>
+                <form method="GET" action="{{ route('attendance.export.monthly') }}" class="flex flex-wrap items-end gap-3 mb-6">
+                    <div>
+                        <label class="block text-sm mb-1">Bulan</label>
+                        <input type="month" name="month" value="{{ now()->format('Y-m') }}" class="border rounded p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1">Format</label>
+                        <select name="format" class="border rounded p-2">
+                            <option value="csv">CSV</option>
+                            <option value="pdf">PDF</option>
+                            <option value="xlsx">Spreadsheet (XLSX)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded">Download</button>
+                    </div>
+                </form>
+
                 <h2 class="text-lg font-semibold mb-4">Rekap Hari Ini (Asia/Jakarta)</h2>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
